@@ -5,8 +5,10 @@
 #include <vector>
 #include <iterator>
 #include <cmath>
+#include "Eigen/Dense"
 
 using namespace std;
+using namespace Eigen;
 
 #define OSINT int
 #define N 100
@@ -24,8 +26,13 @@ void get_values(double ****);
 vector<string> split(const string &, char);
 void allocate(double ****);
 void de_allocate(double ****);
-void interpolate(double, double, OSINT *, OSINT *, double ***, double *);
-void get_points(double, double, OSINT *, OSINT *, double ***);
+void interpolate(double, double, double, OSINT *, OSINT *, double ***, double *, Matrix4f, Vector4f, Vector4f);
+void simple(double, double, OSINT *, OSINT *, double ***, double *);
+void smooth(double, double, double, OSINT *, OSINT *, double ***, double *, Matrix4f, Vector4f, Vector4f);
+int get_points(double, double, OSINT *, OSINT *, double ***);
+int get_x_ind(OSINT, double, OSINT, OSINT *, double ***);
+void get_y_ind(double, OSINT *, double ***);
+bool in_between(double, double, double);
 void test(double, double, OSINT *, OSINT *, double ***, double *);
 
 
