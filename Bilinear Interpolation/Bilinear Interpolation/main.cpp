@@ -13,8 +13,6 @@ OSINT main(){
         x = (XMAX - XMIN) * ((double)rand() / (double)RAND_MAX) + XMIN;
         y = (YMAX - YMIN) * ((double)rand() / (double)RAND_MAX) + YMIN;
         zone = 0.1;
-//    x = 0.34733;
-//    y = -0.60513;
         interpolate(x, y, zone, x_ind, y_ind, table, results, A, B, X);
         test(x, y, x_ind, y_ind, table, results);
     } // for i
@@ -36,7 +34,7 @@ void get_dimensions(){
     vector<string> items;
     vector<string>::iterator it;
     
-    ifstream file("input_sample.txt");
+    ifstream file("input_sample1.txt");
     
     if (file.is_open()){
         getline(file,line);
@@ -71,7 +69,7 @@ void get_values(double ****table){
     vector<string> items;
     vector<string>::iterator it;
 
-    ifstream file("input_sample.txt");
+    ifstream file("input_sample1.txt");
     
     if (file.is_open()){
         getline(file,line);
@@ -194,7 +192,8 @@ void simple(double x, double y, OSINT *x_ind, OSINT *y_ind, double ***table, dou
 void smooth(double x, double y, double zone, OSINT *x_ind, OSINT *y_ind, double ***table, double *results,
             Matrix4f A, Vector4f B, Vector4f X){
     OSINT i;
-    double f1, f2, f3, x1, x2, x3, y1, y2, a, b, df_a, df_b, f_xy1, f_xy2, df_xy1, df_xy2, f, dfdx, dfdy, dfdxy;
+    double f1, f2, f3, x1, x2, x3, y1, y2, a, b, f_a, f_b, df_a, df_b,
+    f_xy1 = 0, f_xy2 = 0, df_xy1 = 0, df_xy2 = 0, f, dfdx, dfdy, dfdxy;
     
     y1 = table[y_ind[0]][0][2];
     y2 = table[y_ind[1]][0][2];
@@ -212,10 +211,12 @@ void smooth(double x, double y, double zone, OSINT *x_ind, OSINT *y_ind, double 
         
         df_a = (f2 - f1)/(x2 - x1);
         df_b = (f3 - f2)/(x3 - x2);
+        f_a = f1 + df_a * (a - x1);
+        f_b = f2 + df_b * (b - x2);
         
         if(in_between(x, a, b)){
             A << pow(a, 3), pow(a, 2), a, 1, pow(b, 3), pow(b, 2), b, 1, 3*pow(a, 2), 2*a, 1, 0, 3*pow(b, 2), 2*b, 1, 0;
-            B << f1, f3, df_a, df_b;
+            B << f_a, f_b, df_a, df_b;
             X = A.colPivHouseholderQr().solve(B);
             
             if(i == 0){
@@ -355,9 +356,15 @@ bool in_between(double x, double a, double b){
 void test(double x, double y, OSINT *x_ind, OSINT *y_ind, double ***table, double *results){
     OSINT i, j;
     double x_min = 0, x_max = 0, y_min = 0, y_max = 0;
+    double theo_f, theo_dfdx, theo_dfdy, theo_dfdxy;
     
     y_min = table[0][0][2];
     y_max = table[Q-1][0][2];
+    
+    theo_f = sin(x) * sin(y);
+    theo_dfdx = cos(x) * sin(y);
+    theo_dfdy = sin(x) * cos(y);
+    theo_dfdxy = cos(x) * cos(y);
     
     for(i = 0; i < Q; i++){
         for(j = 0; j < M; j++){
@@ -368,12 +375,11 @@ void test(double x, double y, OSINT *x_ind, OSINT *y_ind, double ***table, doubl
         } // for j
     } // for i
     
-    
     cout << "Results: (experimental theoretical error)" << endl;
-    cout << "f: " << results[0] << " " << sin(x + y) << " " << abs(results[0] - sin(x + y)) << endl;
-    cout << "df/dx: " << results[1] << " " << cos(x + y) << " " << abs(results[1] - cos(x + y)) << endl;
-    cout << "df/dy: " << results[2] << " " << cos(x + y) << " " << abs(results[2] - cos(x + y)) << endl;
-    cout << "d^2f/dxdy: " << results[3] << " " << -sin(x + y) << " " << abs(results[3] + sin(x + y)) << endl;
+    cout << "f: " << results[0] << " " << theo_f << " " << abs(results[0] - theo_f) << endl;
+    cout << "df/dx: " << results[1] << " " << theo_dfdx << " " << abs(results[1] - theo_dfdx) << endl;
+    cout << "df/dy: " << results[2] << " " << theo_dfdy << " " << abs(results[2] - theo_dfdy) << endl;
+    cout << "d^2f/dxdy: " << results[3] << " " << theo_dfdxy << " " << abs(results[3] - theo_dfdxy) << endl;
     if(x < x_min || x > x_max || y < y_min || y > y_max)
         cout << "Point (x, y) = (" << x << ", " << y << ") is out of bound." << endl;
     cout << endl;
