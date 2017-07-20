@@ -45,7 +45,7 @@ void get_results(double *d_array, double *f_array, double d, OSINT *index, doubl
 
 int interpolate(double d, double zone, OSINT *index, double *d_array, double *f_array,
                  double *results, double *results_simple, double *results_smooth,
-                 Matrix4f A, Vector4f B, Vector4f X){
+                 Matrix4f &A, Vector4f &B, Vector4f &X){
     OSINT ext;
     double d1, d2, d3, a, b;
     
@@ -125,7 +125,7 @@ int simple(double *d_array, double *f_array, double d, OSINT *index, double *res
     return ext;
 } // simple()
 
-void smooth(double d, double zone, double *results_simple, Matrix4f A, Vector4f B, Vector4f X,
+void smooth(double d, double zone, double *results_simple, Matrix4f &A, Vector4f &B, Vector4f &X,
             double *results_smooth){
     double f1, f2, f3, d1, d2, d3;
     double a, b, m_a, m_b, f_a, f_b;

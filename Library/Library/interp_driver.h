@@ -2,6 +2,7 @@
 #include <cmath>
 #include "interp.h"
 
+#define M_PI 3.14159265359
 #define MAX 2*M_PI
 #define MIN -2*M_PI
 

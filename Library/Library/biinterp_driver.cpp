@@ -1,5 +1,8 @@
 #include "biinterp_driver.h"
 
+OSINT Q = 1;
+OSINT M = 1; 
+
 OSINT main(){
     OSINT i, *x_ind = new OSINT[6], *y_ind = new OSINT[2];
     double x, y, zone, *results = new double[4], ***table = nullptr;

@@ -12,8 +12,8 @@
 #define YMIN -1
 #define YMAX 1
 
-OSINT Q = 1; // # of y-values
-OSINT M = 1; // max # of x-values
+extern OSINT Q; // # of y-values
+extern OSINT M; // max # of x-values
 
 void read_input(string, double ****);
 void get_dimensions(string);

@@ -1,7 +1,7 @@
 #include "biinterp.h"
 
 void interpolate(double x, double y, double zone, OSINT *x_ind, OSINT *y_ind, double ***table, OSINT Q, OSINT M, double *results,
-                 Matrix4f A, Vector4f B, Vector4f X){
+                 Matrix4f &A, Vector4f &B, Vector4f &X){
     OSINT ext;
     
     ext = get_points(x, y, x_ind, y_ind, table, Q, M);
@@ -43,7 +43,7 @@ void simple(double x, double y, OSINT *x_ind, OSINT *y_ind, double ***table, OSI
 } // simple()
 
 void smooth(double x, double y, double zone, OSINT *x_ind, OSINT *y_ind, double ***table, OSINT Q, OSINT M, double *results,
-            Matrix4f A, Vector4f B, Vector4f X){
+            Matrix4f &A, Vector4f &B, Vector4f &X){
     OSINT i;
     double f1, f2, f3, x1, x2, x3, y1, y2, a, b, f_a, f_b, df_a, df_b,
     f_xy1 = 0, f_xy2 = 0, df_xy1 = 0, df_xy2 = 0, f, dfdx, dfdy, dfdxy;
