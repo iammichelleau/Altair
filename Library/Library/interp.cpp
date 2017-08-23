@@ -45,7 +45,7 @@ void get_results(double *d_array, double *f_array, double d, OSINT *index, doubl
 
 int interpolate(double d, double zone, OSINT *index, double *d_array, double *f_array,
                  double *results, double *results_simple, double *results_smooth,
-                 Matrix4f &A, Vector4f &B, Vector4f &X){
+                 Matrix4f &A, Vector4f &B, Vector4f &X, OSINT L){
     OSINT ext;
     double d1, d2, d3, a, b;
     
@@ -56,7 +56,7 @@ int interpolate(double d, double zone, OSINT *index, double *d_array, double *f_
     a = d1 + (1 - zone) * (d2 - d1);
     b = d2 + zone * (d3 - d2);
 
-    ext = simple(d_array, f_array, d, index, results_simple);
+    ext = simple(d_array, f_array, d, index, results_simple, L);
     if(in_between(d, d_array[index[0]], d_array[index[1]]) || index[2] == -1){
         results[0] = results_simple[0];
         results[1] = results_simple[2];
@@ -75,7 +75,7 @@ int interpolate(double d, double zone, OSINT *index, double *d_array, double *f_
     return ext; 
 } // interpolate()
 
-int simple(double *d_array, double *f_array, double d, OSINT *index, double *results){
+int simple(double *d_array, double *f_array, double d, OSINT *index, double *results, OSINT L){
     OSINT i, index1, index2, ext;
     double d_avg;
     

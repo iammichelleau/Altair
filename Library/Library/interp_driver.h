@@ -2,6 +2,8 @@
 #include <cmath>
 #include "interp.h"
 
+#define N 300
+#define L (2*N + 1)
 #define M_PI 3.14159265359
 #define MAX 2*M_PI
 #define MIN -2*M_PI

@@ -2,7 +2,7 @@
 #include <cmath>
 
 #define OSINT int
-#define M 7
+#define QSORT_M 7
 #define NSTACK 64
 #define NR_END 1
 

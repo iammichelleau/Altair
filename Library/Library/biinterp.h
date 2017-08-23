@@ -1,11 +1,11 @@
 #include <iostream>
 #include "../../Eigen/Dense"
 
-using namespace std;
-using namespace Eigen;
-
 #define OSINT int
 #define INF 1e36
+
+using namespace std;
+using namespace Eigen;
 
 void interpolate(double, double, double, OSINT *, OSINT *, double ***, OSINT, OSINT, double *, Matrix4f &, Vector4f &, Vector4f &);
 void simple(double, double, OSINT *, OSINT *, double ***, OSINT, OSINT, double *);

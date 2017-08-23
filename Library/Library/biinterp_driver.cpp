@@ -131,9 +131,9 @@ void initialization(double ****table){
         for(j = 0; j < M; j++){
             for(k = 0; k < 3; k++)
                 (*table)[i][j][k] = -INF;
-        }
-    }
-} // allocate()
+        } // for j
+    } // for i
+} // initialization()
 
 void free(double ****table){
     OSINT i, j;

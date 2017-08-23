@@ -4,6 +4,7 @@
 #include <vector>
 #include <iterator>
 #include <cmath>
+#include <time.h>
 #include "biinterp.h"
 
 #define N 100
