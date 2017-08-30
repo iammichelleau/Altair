@@ -81,7 +81,7 @@ void quicksort(OSINT *A, OSINT *index, OSINT *istack, OSINT N){
     OSINT a;
     
     for(;;){
-        if(ir - l < QSORT_M){
+        if(ir - l < M){
             for(j = l + 1; j <= ir; j++){
                 a = A[j];
                 ind = index[j];
@@ -152,7 +152,7 @@ void quicksort(double *A, OSINT *index, OSINT *istack, OSINT N){
     double a;
     
     for(;;){
-        if(ir - l < QSORT_M){
+        if(ir - l < M){
             for(j = l + 1; j <= ir; j++){
                 a = A[j];
                 ind = index[j];
@@ -217,3 +217,17 @@ void quicksort(double *A, OSINT *index, OSINT *istack, OSINT N){
         } // else
     } // for
 } // quicksort()
+
+
+
+
+
+
+
+
+
+
+
+
+
+

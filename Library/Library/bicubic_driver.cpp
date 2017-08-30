@@ -1,82 +1,54 @@
-#include "grid_driver.h"
+#include "bicubic_driver.h"
 
 OSINT X = 1;
 OSINT MAX_X = 1;
 OSINT Y = 1;
 
 OSINT main(){
-    OSINT i, in, n, *istack = ivector(1, NSTACK), *index = nullptr, *interp_index = new OSINT [3],
-        *x_ind = new OSINT[2], *y_ind = new OSINT[2];
-    OSINT bcucof_wt[16*16] = {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
-        -3, 0, 0, 3, 0, 0, 0, 0, -2, 0, 0, -1, 0, 0, 0, 0,
-        2, 0, 0, -2, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0,
-        0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0,
-        0, 0, 0, 0, -3, 0, 0, 3, 0, 0, 0, 0, -2, 0, 0, -1,
-        0, 0, 0, 0, 2, 0, 0, -2, 0, 0, 0, 0, 1, 0, 0, 1,
-        -3, 3, 0, 0, -2, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, -3, 3, 0, 0, -2, -1, 0, 0,
-        9, -9, 9, -9, 6, 3, -3, -6, 6, -6, -3, 3, 4, 2, 1, 2,
-        -6, 6, -6, 6, -4,-2, 2, 4, -3, 3, 3, -3, -2, -1, -1, -2,
-        2, -2, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 2, -2, 0, 0, 1, 1, 0, 0,
-        -6, 6, -6, 6, -3, -3, 3, 3, -4, 4, 2, -2, -2, -2, -1, -1,
-        4, -4, 4, -4, 2, 2, -2, -2, 2, -2, -2, 2, 1, 1, 1, 1};
-    double x, y, min, max, *x_array = nullptr, ***raw_data = nullptr, ***data = nullptr,
-        *d_array = nullptr, *f_array = nullptr,
-        *interp_results = new double[2], *interp_results_simple = new double[10], *interp_results_smooth = new double[2],
-        *f = new double[4], *f1 = new double[4], *f2 = new double[4], *f12 = new double[4],
-        *results = new double[4], *theo_results = new double[4], **C = new double*[4],
-        *bcucof_x = new double[16], *bcucof_cl = new double [16];
+    OSINT i, in, n;
+    double x, y, min, max;
     string input;
-    //Matrix4f mat_A;
-    //Vector4f vec_B, vec_X;
     srand((unsigned OSINT)time(NULL));
     
-    for(i = 0; i < 4; ++i)
-        C[i] = new double[4];
-    
     for(in = 0; in < 4; in++){
+        OSINT *istack = ivector(1, NSTACK), *index = nullptr, *interp_index = new OSINT [3],
+            *x_ind = new OSINT[2], *y_ind = new OSINT[2], *bcucof_wt = new OSINT[16*16];
+        double *x_array = nullptr, ***raw_data = nullptr, ***data = nullptr,
+            *d_array = nullptr, *f_array = nullptr,
+            *f = new double[4], *f1 = new double[4], *f2 = new double[4], *f12 = new double[4],
+            *results = new double[4], *interp_results = new double[10], *theo_results = new double[4], **C = new double*[4],
+            *bcucof_x = new double[16], *bcucof_cl = new double [16];
+        
+        for(i = 0; i < 4; ++i)
+            C[i] = new double[4];
+        
         if(in == 0){
-            input = "plane.txt";
+            input = "../Input/plane.txt";
             cout << "Interpolating with a plane... " << endl;
         } // if
         if(in == 1){
-            input = "const_plane.txt";
+            input = "../Input/const_plane.txt";
             cout << "Interpolating with a constant plane... " << endl;
         } // if
         if(in == 2){
-            input = "sin_add.txt";
+            input = "../Input/sin_add.txt";
             cout << "Interpolating with sin(x + y)... " << endl;
         } // if
         if(in == 3){
-            input = "sin_times.txt";
+            input = "../Input/sin_times.txt";
             cout << "Interpolating with sin(x * y)... " << endl;
         } // if
 
-		read_input(input, &index, &x_array, &raw_data);
+		read_input(input, &index, &x_array, &raw_data); 
         
-        X = rem_duplicates(x_array, index, istack, X);
+        X = handle_input(x_array, index, istack, X);
         
-		initialization(&d_array, &f_array, &data);
+		initialization(&d_array, &f_array, &data, &bcucof_wt);
+
+		uniform_grid(x_array, d_array, f_array, interp_index, interp_results, &data, raw_data, 
+			X, MAX_X, Y); 
         
-        make_grid(x_array, raw_data, &data, X, MAX_X, Y);
-        //interp_grid(&data, X, Y, interp_index, d_array, f_array, interp_results,
-        //            interp_results_simple, interp_results_smooth, mat_A, vec_B, vec_X);
-		interp_grid(&data, X, Y, interp_index, d_array, f_array, interp_results,
-                    interp_results_simple, interp_results_smooth);
-        
-//        string output = "output.txt"; 
-//        ofstream file;
-//        file.open(output);
-//        for(j = 0; j < Y; j++){
-//            for(i = 0; i < X; i++){
-//                file << data[j][i][0] << " " << data[j][i][1] << " " << data[j][i][2] << endl;
-//            } // for i
-//        } // for j
-        
-        for(n = 0; n < 100; n++){
+        for(n = 0; n < N; n++){
             min = -10.0; max = 10.0;
             x = (max - min) * ((double)rand() / (double)RAND_MAX) + min;
             min = -1.0; max = 1.0;
@@ -85,12 +57,11 @@ OSINT main(){
             bicubic_interp(x, y, x_ind, y_ind, bcucof_wt, bcucof_x, bcucof_cl, f, f1, f2, f12, &C, data, X, Y, results);
             test(in, x, y, results, theo_results);
         } // for n
+        
+        free(istack, index, interp_index, x_ind, y_ind, x_array, d_array, f_array, f, f1, f2, f12,
+             results, interp_results, theo_results, bcucof_x, bcucof_cl, C, raw_data, data);
     } // for in
     
-    free(istack, index, interp_index, x_ind, y_ind, x_array, d_array, f_array, interp_results, interp_results_simple, interp_results_smooth, results, theo_results, C, raw_data, data);
-    
-	cin.get();
-
     return 0;
 } // main()
 
@@ -124,7 +95,7 @@ void raw_initialization(OSINT **index, double **x_array, double ****data){
     } // for i
 } // raw_initialization()
 
-void initialization(double **d_array, double **f_array, double ****data){
+void initialization(double **d_array, double **f_array, double ****data, OSINT **bcucof_wt){
 	OSINT i, j; 
 
 	(*data) = new double**[Y];
@@ -136,6 +107,26 @@ void initialization(double **d_array, double **f_array, double ****data){
         
     (*d_array) = new double[X];
     (*f_array) = new double[X];
+    
+    OSINT wt[16*16] = {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
+        -3, 0, 0, 3, 0, 0, 0, 0, -2, 0, 0, -1, 0, 0, 0, 0,
+        2, 0, 0, -2, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0,
+        0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0,
+        0, 0, 0, 0, -3, 0, 0, 3, 0, 0, 0, 0, -2, 0, 0, -1,
+        0, 0, 0, 0, 2, 0, 0, -2, 0, 0, 0, 0, 1, 0, 0, 1,
+        -3, 3, 0, 0, -2, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, -3, 3, 0, 0, -2, -1, 0, 0,
+        9, -9, 9, -9, 6, 3, -3, -6, 6, -6, -3, 3, 4, 2, 1, 2,
+        -6, 6, -6, 6, -4,-2, 2, 4, -3, 3, 3, -3, -2, -1, -1, -2,
+        2, -2, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 2, -2, 0, 0, 1, 1, 0, 0,
+        -6, 6, -6, 6, -3, -3, 3, 3, -4, 4, 2, -2, -2, -2, -1, -1,
+        4, -4, 4, -4, 2, 2, -2, -2, 2, -2, -2, 2, 1, 1, 1, 1};
+    
+    for(i = 0; i < (16 * 16); i++)
+        (*bcucof_wt)[i] = wt[i];
 } // initialization()
 
 void get_dimensions(string input){
@@ -281,8 +272,9 @@ OSINT *ivector(long nl, long nh){
 } // ivector()
 
 void free(OSINT *istack, OSINT *index, OSINT *interp_index, OSINT *x_ind, OSINT *y_ind,
-          double *x_array, double *d_array, double *f_array, double *interp_results, double *interp_results_simple,
-          double *interp_results_smooth, double *results, double *theo_results,
+          double *x_array, double *d_array, double *f_array, double *f, double *f1, double *f2, double *f12,
+          double *results, double *interp_results, double *theo_results,
+          double *bcucof_x, double *bcucof_cl,
           double **C, double ***raw_data, double ***data){
     
     OSINT i, j;
@@ -295,10 +287,12 @@ void free(OSINT *istack, OSINT *index, OSINT *interp_index, OSINT *x_ind, OSINT 
     delete []x_array;
     delete []d_array;
     delete []f_array;
-    delete []interp_results;
-    delete []interp_results_simple;
-    delete []interp_results_smooth;
+    delete []f;
+    delete []f1;
+    delete []f2;
+    delete []f12;
     delete []results;
+    delete []interp_results;
     delete []theo_results;
     
     for(i = 0; i < 4; i++)

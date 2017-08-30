@@ -1,4 +1,12 @@
-#include "grid.h"
+#include "bicubic.h"
+
+void uniform_grid(double *x_array, double *d_array, double *f_array, 
+	OSINT *interp_index, double *interp_results, double ****data, double ***raw_data, 
+	OSINT X, OSINT MAX_X, OSINT Y){
+
+	make_grid(x_array, raw_data, data, X, MAX_X, Y);
+	interp_grid(data, X, Y, interp_index, d_array, f_array, interp_results);
+} // uniform_grid()
 
 void make_grid(double *x_array, double ***raw_data, double ****data, OSINT X, OSINT MAX_X, OSINT Y){
     OSINT i, j, k;
@@ -17,11 +25,8 @@ void make_grid(double *x_array, double ***raw_data, double ****data, OSINT X, OS
     } // for i
 } // make_grid()
 
-//void interp_grid(double ****data, OSINT X, OSINT Y,
-//                 OSINT *interp_index, double *d_array, double *f_array, double *results, double *results_simple, double *results_smooth,
-//                 Matrix4f &mat_A, Vector4f &vec_B, Vector4f &vec_X){
 void interp_grid(double ****data, OSINT X, OSINT Y,
-                 OSINT *interp_index, double *d_array, double *f_array, double *results, double *results_simple, double *results_smooth){
+                 OSINT *interp_index, double *d_array, double *f_array, double *results){
     OSINT i, j, k, L;
     double d, zone;
     
@@ -40,15 +45,98 @@ void interp_grid(double ****data, OSINT X, OSINT Y,
                     } // if
                 } // for k
                 
-                //interpolate(d, zone, interp_index, d_array, f_array, results, results_simple, results_smooth,
-                //            mat_A, vec_B, vec_X, L);
-//				simple(d_array, f_array, d, interp_index, results, L);
+				simple(d_array, f_array, d, interp_index, results, L);
                 
                 (*data)[j][i][0] = results[0];
             } // if
         } // for i
     } // for j
 } // interp_grid()
+
+OSINT simple(double *d_array, double *f_array, double d, OSINT *index, double *results, OSINT L){
+    OSINT i, index1, index2, ext;
+    double d_avg;
+    
+//    cout << "Interpolating " << d << "..." << endl;
+    
+    for(i = 0; i < L; i++){
+        if(d_array[i] > d){
+            i = i - 1;
+            break;
+        } // if
+    } // for i
+    
+    if(i == -1)
+        i += 1;
+    if(i == L)
+        i -= 2;
+    
+    index1 = i;
+    index2 = i + 1;
+    
+//    cout <<  "Interpolating between: " << d_array[index1] << " " << d_array[index2] << endl;
+    d_avg = (d_array[index2] + d_array[index1])/2.0;
+    
+    if(in_between(d, d_array[index1], d_avg) && (index1 != 0)){
+        ext = -1;
+        index[0] = index1 - 1;
+        index[1] = index1;
+        index[2] = index2;
+        get_results(d_array, f_array, d, index, results, ext);
+        return ext;
+    } // if
+    
+    if(in_between(d, d_avg, d_array[index2]) && (index2 != L - 1)){
+        ext = 1;
+        index[0] = index1;
+        index[1] = index2;
+        index[2] = index2 + 1;
+        get_results(d_array, f_array, d, index, results, ext);
+        return ext;
+    } // if
+    
+    ext = 0;
+    index[0] = index1;
+    index[1] = index2;
+    index[2] = -1;
+    get_results(d_array, f_array, d, index, results, ext);
+    return ext;
+} // simple()
+
+bool in_between(double theo, double interp_1, double interp_2){
+    if((interp_1 < theo && theo < interp_2) || ((interp_2 < theo && theo < interp_1)))
+        return true;
+    else
+        return false;
+} // in_between()
+
+void get_results(double *d_array, double *f_array, double d, OSINT *index, double *results, OSINT ext){
+    double m1 = 0, m2 = 0, f1 = 0, f2 = 0;
+    
+    m1 = (f_array[index[1]] - f_array[index[0]]) / (d_array[index[1]] - d_array[index[0]]);
+    f1 = f_array[index[0]] + m1 * (d - d_array[index[0]]);
+    
+    results[0] = f1;
+    results[1] = -INF;
+    results[2] = m1;
+    results[4] = f_array[index[0]];
+    results[3] = -INF;
+    results[5] = f_array[index[1]];
+    results[6] = -INF;
+    results[7] = d_array[index[0]];
+    results[8] = d_array[index[1]];
+    results[9] = -INF;
+    
+    if(ext != 0){
+        m2 = (f_array[index[2]] - f_array[index[1]]) / (d_array[index[2]] - d_array[index[1]]);
+        f2 = f_array[index[1]] + m2 * (d - d_array[index[1]]);
+        
+        results[1] = f2;
+        results[3] = m2;
+        results[6] = f_array[index[2]];
+        results[9] = d_array[index[2]];
+    } // if
+} // get_results()
 
 void bicubic_interp(double x, double y, OSINT *x_ind, OSINT *y_ind,
                     OSINT *bcucof_wt, double *bcucof_x, double *bcucof_cl, double *f, double *f1, double *f2, double *f12,
@@ -195,7 +283,7 @@ void bcuint(double x, double y, OSINT *x_ind, OSINT *y_ind, double ***data, doub
     results[3] = r4;
 } // bcuint()
 
-OSINT rem_duplicates(double *x_array, OSINT *index, OSINT *istack, OSINT X){
+OSINT handle_input(double *x_array, OSINT *index, OSINT *istack, OSINT X){
     OSINT i, j;
 
 	quicksort(x_array, index, istack, X);
@@ -209,4 +297,4 @@ OSINT rem_duplicates(double *x_array, OSINT *index, OSINT *istack, OSINT X){
     } //  if
     
     return (j + 1);
-} // rem_duplicates()
+} // handle_input()

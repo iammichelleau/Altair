@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		603D1CDA1F5623D7001F625D /* bicubic_driver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 603D1CC91F56236F001F625D /* bicubic_driver.cpp */; };
+		603D1CDB1F5623DD001F625D /* bicubic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 603D1CCB1F56236F001F625D /* bicubic.cpp */; };
+		603D1CDC1F562633001F625D /* qsort.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 609983F61F21566E0018B1A7 /* qsort.cpp */; };
 		609983FC1F21566E0018B1A7 /* qsort_driver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 609983F41F21566E0018B1A7 /* qsort_driver.cpp */; };
 		609983FD1F21566E0018B1A7 /* qsort.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 609983F61F21566E0018B1A7 /* qsort.cpp */; };
 		609983FE1F21570C0018B1A7 /* interp_driver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 609983F01F21566E0018B1A7 /* interp_driver.cpp */; };
@@ -16,6 +19,15 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		603D1CD11F5623A2001F625D /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
 		609983C71F214D480018B1A7 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -46,6 +58,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		603D1CC91F56236F001F625D /* bicubic_driver.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = bicubic_driver.cpp; path = Library/bicubic_driver.cpp; sourceTree = SOURCE_ROOT; };
+		603D1CCA1F56236F001F625D /* bicubic_driver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bicubic_driver.h; path = Library/bicubic_driver.h; sourceTree = SOURCE_ROOT; };
+		603D1CCB1F56236F001F625D /* bicubic.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = bicubic.cpp; path = Library/bicubic.cpp; sourceTree = SOURCE_ROOT; };
+		603D1CCC1F56236F001F625D /* bicubic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bicubic.h; path = Library/bicubic.h; sourceTree = SOURCE_ROOT; };
+		603D1CD31F5623A2001F625D /* Bicubic */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Bicubic; sourceTree = BUILT_PRODUCTS_DIR; };
 		609983C91F214D480018B1A7 /* Qsort */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Qsort; sourceTree = BUILT_PRODUCTS_DIR; };
 		609983D41F214D4F0018B1A7 /* Interp */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Interp; sourceTree = BUILT_PRODUCTS_DIR; };
 		609983DF1F214D560018B1A7 /* BiInterp */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = BiInterp; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -64,6 +81,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		603D1CD01F5623A2001F625D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		609983C61F214D480018B1A7 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -88,12 +112,24 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		603D1CD41F5623A2001F625D /* Bicubic */ = {
+			isa = PBXGroup;
+			children = (
+				603D1CC91F56236F001F625D /* bicubic_driver.cpp */,
+				603D1CCA1F56236F001F625D /* bicubic_driver.h */,
+				603D1CCB1F56236F001F625D /* bicubic.cpp */,
+				603D1CCC1F56236F001F625D /* bicubic.h */,
+			);
+			path = Bicubic;
+			sourceTree = "<group>";
+		};
 		609983A01F214CB40018B1A7 = {
 			isa = PBXGroup;
 			children = (
 				609983CA1F214D480018B1A7 /* Qsort */,
 				609983D51F214D500018B1A7 /* Interp */,
 				609983E01F214D560018B1A7 /* BiInterp */,
+				603D1CD41F5623A2001F625D /* Bicubic */,
 				609983AA1F214CB40018B1A7 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -104,6 +140,7 @@
 				609983C91F214D480018B1A7 /* Qsort */,
 				609983D41F214D4F0018B1A7 /* Interp */,
 				609983DF1F214D560018B1A7 /* BiInterp */,
+				603D1CD31F5623A2001F625D /* Bicubic */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -144,6 +181,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		603D1CD21F5623A2001F625D /* Bicubic */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 603D1CD71F5623A2001F625D /* Build configuration list for PBXNativeTarget "Bicubic" */;
+			buildPhases = (
+				603D1CCF1F5623A2001F625D /* Sources */,
+				603D1CD01F5623A2001F625D /* Frameworks */,
+				603D1CD11F5623A2001F625D /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Bicubic;
+			productName = Bicubic;
+			productReference = 603D1CD31F5623A2001F625D /* Bicubic */;
+			productType = "com.apple.product-type.tool";
+		};
 		609983C81F214D480018B1A7 /* Qsort */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 609983CD1F214D480018B1A7 /* Build configuration list for PBXNativeTarget "Qsort" */;
@@ -204,6 +258,10 @@
 				LastUpgradeCheck = 0830;
 				ORGANIZATIONNAME = "Michelle Au";
 				TargetAttributes = {
+					603D1CD21F5623A2001F625D = {
+						CreatedOnToolsVersion = 8.3.3;
+						ProvisioningStyle = Automatic;
+					};
 					609983C81F214D480018B1A7 = {
 						CreatedOnToolsVersion = 8.3.3;
 						ProvisioningStyle = Automatic;
@@ -233,11 +291,22 @@
 				609983C81F214D480018B1A7 /* Qsort */,
 				609983D31F214D4F0018B1A7 /* Interp */,
 				609983DE1F214D560018B1A7 /* BiInterp */,
+				603D1CD21F5623A2001F625D /* Bicubic */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
+		603D1CCF1F5623A2001F625D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				603D1CDA1F5623D7001F625D /* bicubic_driver.cpp in Sources */,
+				603D1CDB1F5623DD001F625D /* bicubic.cpp in Sources */,
+				603D1CDC1F562633001F625D /* qsort.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		609983C51F214D480018B1A7 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -268,6 +337,20 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
+		603D1CD81F5623A2001F625D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		603D1CD91F5623A2001F625D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		609983AE1F214CB40018B1A7 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -402,6 +485,14 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		603D1CD71F5623A2001F625D /* Build configuration list for PBXNativeTarget "Bicubic" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				603D1CD81F5623A2001F625D /* Debug */,
+				603D1CD91F5623A2001F625D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		609983A41F214CB40018B1A7 /* Build configuration list for PBXProject "Library" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

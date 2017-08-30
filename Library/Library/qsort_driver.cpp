@@ -48,6 +48,7 @@ int main(){
     
     free(istack, index, A_int, B_int, temp_int, A_int_orig, B_int_orig,
          A_double, B_double, temp_double, A_double_orig, B_double_orig);
+	
     return 0;
 } // main()
 

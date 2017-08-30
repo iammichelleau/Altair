@@ -1,8 +1,10 @@
+#pragma once
+
 #include <iostream>
 #include <cmath>
 
 #define OSINT int
-#define QSORT_M 7
+#define M 7
 #define NSTACK 64
 #define NR_END 1
 

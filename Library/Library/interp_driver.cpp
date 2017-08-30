@@ -13,11 +13,12 @@ int main() {
         zone = 0.1;
         
         initialization(d_array, f_array);
-        ext = interpolate(d, zone, index, d_array, f_array, results, results_simple, results_smooth, A, B, X);
+        ext = interpolate(d, zone, index, d_array, f_array, results, results_simple, results_smooth, A, B, X, L);
         test(results, results_simple, results_smooth, d_array, d, index, ext);
     } // for i
     
     free(d_array, f_array, results, results_simple, results_smooth);
+	
     return 0;
 } // main()
 

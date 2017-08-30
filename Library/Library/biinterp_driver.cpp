@@ -8,7 +8,7 @@ OSINT main(){
     double x, y, zone, *results = new double[4], ***table = nullptr;
     Matrix4f A;
     Vector4f B, X;
-    string filename = "input_sample1.txt";
+    string filename = "../Input/input_sample1.txt";
     srand((unsigned OSINT)time(NULL));
     
     read_input(filename, &table);
@@ -23,6 +23,7 @@ OSINT main(){
     } // for i
     
     free(&table);
+
     return 0;
 } // main()
 
@@ -131,9 +132,9 @@ void initialization(double ****table){
         for(j = 0; j < M; j++){
             for(k = 0; k < 3; k++)
                 (*table)[i][j][k] = -INF;
-        } // for j
-    } // for i
-} // initialization()
+        }
+    }
+} // allocate()
 
 void free(double ****table){
     OSINT i, j;

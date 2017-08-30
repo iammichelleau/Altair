@@ -4,16 +4,18 @@
 #include <vector>
 #include <iterator>
 #include <time.h>
-#include "grid.h"
+#include "bicubic.h"
+
+#define N 1
 
 extern OSINT X;
 extern OSINT MAX_X;
 extern OSINT Y;
 
 void raw_initialization(OSINT **, double **, double ****);
-void initialization(double **, double **, double ****);
-void free(OSINT *, OSINT *, OSINT *, OSINT *, OSINT *, double *, double *, double *, double *, double *,
-          double *, double *, double *, double **, double ***, double ***);
+void initialization(double **, double **, double ****, OSINT **);
+void free(OSINT *, OSINT *, OSINT *, OSINT *, OSINT *, double *, double *, double *, double *, double *, double *, double *,
+          double *, double *, double *, double *, double *, double **, double ***, double ***);
 void read_input(string, OSINT **, double **, double ****);
 void get_dimensions(string);
 void get_values(string, double **, double ****);

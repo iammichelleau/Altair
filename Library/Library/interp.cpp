@@ -43,7 +43,7 @@ void get_results(double *d_array, double *f_array, double d, OSINT *index, doubl
     } // if
 } // get_results()
 
-int interpolate(double d, double zone, OSINT *index, double *d_array, double *f_array,
+OSINT interpolate(double d, double zone, OSINT *index, double *d_array, double *f_array,
                  double *results, double *results_simple, double *results_smooth,
                  Matrix4f &A, Vector4f &B, Vector4f &X, OSINT L){
     OSINT ext;
@@ -75,7 +75,7 @@ int interpolate(double d, double zone, OSINT *index, double *d_array, double *f_
     return ext; 
 } // interpolate()
 
-int simple(double *d_array, double *f_array, double d, OSINT *index, double *results, OSINT L){
+OSINT simple(double *d_array, double *f_array, double d, OSINT *index, double *results, OSINT L){
     OSINT i, index1, index2, ext;
     double d_avg;
     
@@ -96,7 +96,7 @@ int simple(double *d_array, double *f_array, double d, OSINT *index, double *res
     index1 = i;
     index2 = i + 1;
     
-//    cout << "Interpolating between: " << d_array[index1] << " " << d_array[index2] << endl;
+//    cout <<  "Interpolating between: " << d_array[index1] << " " << d_array[index2] << endl;
     d_avg = (d_array[index2] + d_array[index1])/2.0;
     
     if(in_between(d, d_array[index1], d_avg) && (index1 != 0)){
