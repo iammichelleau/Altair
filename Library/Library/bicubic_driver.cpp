@@ -5,62 +5,40 @@ OSINT MAX_X = 1;
 OSINT Y = 1;
 
 OSINT main(){
-    OSINT i, in, n;
-    double x, y, min, max;
-    string input;
+    OSINT i, *istack = ivector(1, NSTACK), *index = nullptr, *interp_index = new OSINT [3],
+        *x_ind = new OSINT[2], *y_ind = new OSINT[2], *bcucof_wt = new OSINT[16*16];
+    double x, y, min, max, *x_array = nullptr, ***raw_data = nullptr, ***data = nullptr,
+        *d_array = nullptr, *f_array = nullptr,
+        *f = new double[4], *f1 = new double[4], *f2 = new double[4], *f12 = new double[4],
+        *results = new double[4], *interp_results = new double[10], *theo_results = new double[4], **C = new double*[4],
+        *bcucof_x = new double[16], *bcucof_cl = new double [16];
+    string input = "../../Input/plane.txt";
     srand((unsigned OSINT)time(NULL));
+        
+    for(i = 0; i < 4; ++i)
+        C[i] = new double[4];
+
+    read_input(input, &index, &x_array, &raw_data); 
     
-    for(in = 0; in < 4; in++){
-        OSINT *istack = ivector(1, NSTACK), *index = nullptr, *interp_index = new OSINT [3],
-            *x_ind = new OSINT[2], *y_ind = new OSINT[2], *bcucof_wt = new OSINT[16*16];
-        double *x_array = nullptr, ***raw_data = nullptr, ***data = nullptr,
-            *d_array = nullptr, *f_array = nullptr,
-            *f = new double[4], *f1 = new double[4], *f2 = new double[4], *f12 = new double[4],
-            *results = new double[4], *interp_results = new double[10], *theo_results = new double[4], **C = new double*[4],
-            *bcucof_x = new double[16], *bcucof_cl = new double [16];
-        
-        for(i = 0; i < 4; ++i)
-            C[i] = new double[4];
-        
-        if(in == 0){
-            input = "../Input/plane.txt";
-            cout << "Interpolating with a plane... " << endl;
-        } // if
-        if(in == 1){
-            input = "../Input/const_plane.txt";
-            cout << "Interpolating with a constant plane... " << endl;
-        } // if
-        if(in == 2){
-            input = "../Input/sin_add.txt";
-            cout << "Interpolating with sin(x + y)... " << endl;
-        } // if
-        if(in == 3){
-            input = "../Input/sin_times.txt";
-            cout << "Interpolating with sin(x * y)... " << endl;
-        } // if
+    X = handle_input(x_array, index, istack, X);
+    
+    initialization(&d_array, &f_array, &data, &bcucof_wt);
 
-		read_input(input, &index, &x_array, &raw_data); 
+    uniform_grid(x_array, d_array, f_array, interp_index, interp_results, &data, raw_data, 
+        X, MAX_X, Y); 
+    
+    for(i = 0; i < N; i++){
+        min = -10.0; max = 10.0;
+        x = (max - min) * ((double)rand() / (double)RAND_MAX) + min;
+        min = -1.0; max = 1.0;
+        y = (max - min) * ((double)rand() / (double)RAND_MAX) + min;
         
-        X = handle_input(x_array, index, istack, X);
-        
-		initialization(&d_array, &f_array, &data, &bcucof_wt);
-
-		uniform_grid(x_array, d_array, f_array, interp_index, interp_results, &data, raw_data, 
-			X, MAX_X, Y); 
-        
-        for(n = 0; n < N; n++){
-            min = -10.0; max = 10.0;
-            x = (max - min) * ((double)rand() / (double)RAND_MAX) + min;
-            min = -1.0; max = 1.0;
-            y = (max - min) * ((double)rand() / (double)RAND_MAX) + min;
-            
-            bicubic_interp(x, y, x_ind, y_ind, bcucof_wt, bcucof_x, bcucof_cl, f, f1, f2, f12, &C, data, X, Y, results);
-            test(in, x, y, results, theo_results);
-        } // for n
-        
-        free(istack, index, interp_index, x_ind, y_ind, x_array, d_array, f_array, f, f1, f2, f12,
-             results, interp_results, theo_results, bcucof_x, bcucof_cl, C, raw_data, data);
-    } // for in
+        bicubic_interp(x, y, x_ind, y_ind, bcucof_wt, bcucof_x, bcucof_cl, f, f1, f2, f12, &C, data, X, Y, results);
+        test(x, y, results, theo_results);
+    } // for n
+    
+    free(istack, index, interp_index, x_ind, y_ind, x_array, d_array, f_array, f, f1, f2, f12,
+         results, interp_results, theo_results, bcucof_wt, bcucof_x, bcucof_cl, C, raw_data, data);
     
     return 0;
 } // main()
@@ -205,40 +183,13 @@ void get_values(string input, double **x_array, double ****data){
         cout << "Unable to open file.";
 } // get_values()
 
-void test(OSINT in, double x, double y, double *results, double *theo_results){
+void test(double x, double y, double *results, double *theo_results){
     OSINT i; 
-	
-	if(in == 0){
-        // Plane
-        theo_results[0] = x+y;
-        theo_results[1] = 1;
-        theo_results[2] = 1;
-        theo_results[3] = 0;
-    } // if
-    
-    if(in == 1){
-        // Constant Plane
-        theo_results[0] = 10;
-        theo_results[1] = 0;
-        theo_results[2] = 0;
-        theo_results[3] = 0;
-    } // if
-    
-    if(in == 2){
-        // Sine (Add)
-        theo_results[0] = sin(x+y);
-        theo_results[1] = cos(x+y);
-        theo_results[2] = cos(x+y);
-        theo_results[3] = -sin(x+y);
-    } // if
-    
-    if(in == 3){
-        // Sine (Times)
-        theo_results[0] = sin(x*y);
-        theo_results[1] = cos(x*y)*y;
-        theo_results[2] = cos(x*y)*x;
-        theo_results[3] = cos(x*y) - x * y * sin(x*y);
-    } // if
+
+    theo_results[0] = x+y;
+    theo_results[1] = 1;
+    theo_results[2] = 1;
+    theo_results[3] = 0;
 
 	cout << "(x, y) = (" << x << ", " << y << ")" << endl;
     cout << "Errors: ";
@@ -274,7 +225,7 @@ OSINT *ivector(long nl, long nh){
 void free(OSINT *istack, OSINT *index, OSINT *interp_index, OSINT *x_ind, OSINT *y_ind,
           double *x_array, double *d_array, double *f_array, double *f, double *f1, double *f2, double *f12,
           double *results, double *interp_results, double *theo_results,
-          double *bcucof_x, double *bcucof_cl,
+          OSINT *bcucof_wt, double *bcucof_x, double *bcucof_cl,
           double **C, double ***raw_data, double ***data){
     
     OSINT i, j;
@@ -294,6 +245,9 @@ void free(OSINT *istack, OSINT *index, OSINT *interp_index, OSINT *x_ind, OSINT 
     delete []results;
     delete []interp_results;
     delete []theo_results;
+    delete []bcucof_wt;
+    delete []bcucof_x;
+    delete []bcucof_cl; 
     
     for(i = 0; i < 4; i++)
         delete [](C[i]);

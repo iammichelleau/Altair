@@ -256,6 +256,7 @@
 				603D1CC41F54B44A001F625D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

@@ -1,14 +1,14 @@
 #include "biinterp_driver.h"
 
 OSINT Q = 1;
-OSINT M = 1; 
+OSINT M = 1;
 
 OSINT main(){
     OSINT i, *x_ind = new OSINT[6], *y_ind = new OSINT[2];
     double x, y, zone, *results = new double[4], ***table = nullptr;
     Matrix4f A;
     Vector4f B, X;
-    string filename = "../Input/input_sample1.txt";
+    string filename = "../../Input/biinterp1.txt";
     srand((unsigned OSINT)time(NULL));
     
     read_input(filename, &table);
@@ -29,6 +29,7 @@ OSINT main(){
 
 void read_input(string filename, double ****table){
     get_dimensions(filename);
+    
     initialization(table);
     get_values(filename, table);
 } // read_input()
