@@ -13,6 +13,7 @@ extern OSINT LENGTH;
 
 void raw_initialization(double ***, OSINT **, OSINT **);
 void initialization(double **, double **, double **, OSINT **);
+void free(OSINT *, OSINT *, OSINT *, double *, double *, double *, double **);
 void read_input(string, double ***, OSINT **, OSINT **);
 void get_dimensions(string);
 void get_values(string, double ***);

@@ -18,6 +18,7 @@ int main(){
     f = nary_interp(point, raw_data, data, distances, queue, children, nodes_by_depth, DIM, LEAVES);
     
     test(f, point, data, children, nodes_by_depth);
+    free(children, nodes_by_depth, queue, point, distances, data, raw_data);
 
     return 0;
 } //  main()
@@ -75,6 +76,22 @@ void initialization(double **point, double **data, double **distances, OSINT **q
     for(i = 0; i < len; i++)
         (*queue)[i] = 0;
 } // initialization()
+
+void free(OSINT *children, OSINT *nodes_by_depth, OSINT *queue,
+          double *point, double *distances, double *data, double **raw_data){
+    OSINT i;
+    
+    delete []children;
+    delete []nodes_by_depth;
+    delete []queue;
+    delete []point;
+    delete []distances;
+    delete []data;
+    
+    for(i = 0; i < LEAVES; i++)
+        delete []raw_data[i];
+    delete []raw_data;
+} // free()
 
 void get_dimensions(string input){
     string y, line;
